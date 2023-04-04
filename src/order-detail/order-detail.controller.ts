@@ -1,0 +1,18 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { OrderDetailService } from './order-detail.service';
+import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
+
+@Controller('order-detail')
+export class OrderDetailController {
+  constructor(private readonly orderDetailService: OrderDetailService) {}
+
+  @Get()
+  findAll() {
+    return this.orderDetailService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.orderDetailService.findOne(+id);
+  }
+}
