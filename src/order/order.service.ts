@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { OrderEntity } from './entities/order.entity';
 
 @Injectable()
@@ -19,8 +18,8 @@ export class OrderService {
   async findAll(id: number) {
     return await this.orderRepository
       .createQueryBuilder('order')
-      .leftJoinAndSelect('order.orderDetails', 'orderDetails')
-      .leftJoinAndSelect('orderDetails.product', 'product')
+      .innerJoinAndSelect('order.orderDetails', 'orderDetails')
+      .innerJoinAndSelect('orderDetails.product', 'product')
       .where('order.userId = :userId', { userId: id })
       .getMany();
   }
@@ -28,15 +27,15 @@ export class OrderService {
   async findOne(id: number) {
     return await this.orderRepository
       .createQueryBuilder('order')
-      .leftJoinAndSelect('order.orderDetails', 'orderDetails')
-      .leftJoinAndSelect('orderDetails.product', 'product')
-      .where('order.id = 2')
-      .getOne()
+      .innerJoinAndSelect('order.orderDetails', 'orderDetails')
+      .innerJoinAndSelect('orderDetails.product', 'product')
+      .where('order.id = :id', { id })
+      .getOne();
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
+  // update(id: number, updateOrderDto: UpdateOrderDto) {
+  //   return `This action updates a #${id} order`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} order`;

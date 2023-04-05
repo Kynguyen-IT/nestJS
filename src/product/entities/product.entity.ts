@@ -24,7 +24,7 @@ export class ProductEntity {
   price: number;
 
   @IsOptional()
-  quantity: number
+  quantity: number;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   category: number;

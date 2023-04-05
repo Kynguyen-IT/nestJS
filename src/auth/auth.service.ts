@@ -3,7 +3,7 @@ import { AuthDto } from './dto/auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@/users/users.service';
-import { MessageName } from '@/message'
+import { MessageName } from '@/message';
 import { IncorrectException } from '@exceptions/incorrect.exception';
 import { JWT_TYPE } from '@constants/jwt.type';
 import * as bcrypt from 'bcrypt';
@@ -14,15 +14,14 @@ import { ILike } from 'typeorm';
 import { sendMail } from '@/utils/mail';
 import { ChangePassword } from './dto/changePassword.dto';
 
-
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) { }
-  
+  ) {}
+
   hashData(data: string) {
     return bcrypt.hashSync(data, 10);
   }
@@ -32,12 +31,12 @@ export class AuthService {
       this.jwtService.signAsync(
         {
           sub: userId,
-          email
+          email,
         },
         {
           secret: this.configService.get<string>(JWT_TYPE.JWT_ACCESS_SECRET),
           expiresIn: '1d',
-        }
+        },
       ),
       this.jwtService.signAsync(
         {
@@ -49,9 +48,9 @@ export class AuthService {
           expiresIn: '7d',
         },
       ),
-    ])
+    ]);
 
-    return {accessToken, refreshToken}
+    return { accessToken, refreshToken };
   }
 
   async updateRefreshToken(userId: number, refreshToken: string) {
@@ -62,8 +61,8 @@ export class AuthService {
   }
 
   async login(data: AuthDto) {
-    const {email, password} = data
-    const user = await this.userService.findByEmail(email)
+    const { email, password } = data;
+    const user = await this.userService.findByEmail(email);
 
     // check user
     if (!user) throw new NotFoundException(MessageName.USER);
@@ -71,25 +70,23 @@ export class AuthService {
     // compase password
     const passwordMatches = user.comparePassword(password);
     if (!passwordMatches) throw new IncorrectException(MessageName.USER);
-    
-    // get token
-    const tokens = await this.getTokens(user.id, email)
-    delete user.password
-    delete user.resetCode
 
-    // update Refresh Token 
+    // get token
+    const tokens = await this.getTokens(user.id, email);
+    delete user.password;
+    delete user.resetCode;
+
+    // update Refresh Token
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {
       ...tokens,
-      user
-    }
+      user,
+    };
   }
 
   async register(createUserDto: CreateUserDto) {
-    const userExists = await this.userService.findByEmail(
-      createUserDto.email,
-    );
+    const userExists = await this.userService.findByEmail(createUserDto.email);
 
     if (userExists) {
       throw new ExistsException(MessageName.USER);
@@ -112,25 +109,24 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPassword) {
-    const user = await this.userService.findByEmail(dto.email)
+    const user = await this.userService.findByEmail(dto.email);
 
     if (!user) {
       throw new NotFoundException(MessageName.USER);
     }
 
-    const resetCode = Math.random().toString().slice(-4)
+    const resetCode = Math.random().toString().slice(-4);
     await this.userService
       .repositoryService()
-      .update({ email: ILike(dto.email)} , {resetCode})
+      .update({ email: ILike(dto.email) }, { resetCode });
 
-     // send password to mail
-     sendMail('forgotPassword', resetCode, user.email);
+    // send password to mail
+    sendMail('forgotPassword', resetCode, user.email);
   }
 
-
   async changePassword(dto: ChangePassword) {
-    const {email, code, password} = dto
-    const user = await this.userService.findByEmail(email)
+    const { email, code, password } = dto;
+    const user = await this.userService.findByEmail(email);
 
     if (!user) {
       throw new NotFoundException(MessageName.USER);
@@ -141,12 +137,9 @@ export class AuthService {
     }
 
     // update password and rest code
-    await this.userService
-      .repositoryService()
-      .update(user.id, {
-        password: bcrypt.hashSync(password, 12),
-        resetCode: null
-      })
+    await this.userService.repositoryService().update(user.id, {
+      password: bcrypt.hashSync(password, 12),
+      resetCode: null,
+    });
   }
-  
 }

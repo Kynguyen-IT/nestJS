@@ -16,8 +16,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
-export const sendMail = async (type: string, code: string, email: string): Promise<any>  => {
+export const sendMail = async (
+  type: string,
+  code: string,
+  email: string,
+): Promise<any> => {
   const replacements = {
     forgotPassword: {
       subject: 'Reset Your Password',
@@ -42,4 +45,4 @@ export const sendMail = async (type: string, code: string, email: string): Promi
   });
 
   transporter.close();
- };
+};

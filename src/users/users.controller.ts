@@ -1,10 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AccessTokenGuard } from '@guards/access-token.guard';
 import { User } from '@decorators/user.decotator';
 import { UserEntity } from './entities/user.entity';
 import { Auth } from '@decorators/auth.decotator';
@@ -13,15 +20,17 @@ import { Auth } from '@decorators/auth.decotator';
 @ApiTags('users')
 @Controller('users')
 @Auth()
-
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
-  
+  constructor(private readonly usersService: UsersService) {}
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const {password} = createUserDto
-    const hashedPassword = await bcrypt.hash(password, 12)
-    return this.usersService.create({...createUserDto, password: hashedPassword });
+    const { password } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 12);
+    return this.usersService.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
   }
 
   @Get()
@@ -45,7 +54,7 @@ export class UsersController {
   }
 
   @Get('me')
-  async findMe(@User('email') email): Promise<UserEntity>{
-    return await this.usersService.findByEmail(email)
+  async findMe(@User('email') email): Promise<UserEntity> {
+    return await this.usersService.findByEmail(email);
   }
 }

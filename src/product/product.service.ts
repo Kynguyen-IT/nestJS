@@ -28,10 +28,11 @@ export class ProductService extends BaseService<
     return await this.productRepository.find();
   }
 
-  async findbyCategory(id: number){
-    return await this.productRepository.createQueryBuilder("product")
-      .leftJoinAndSelect("product.category", "category")
-      .where("product.categoryId = :id", { id })
-      .getMany()
+  async findbyCategory(id: number) {
+    return await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('product.categoryId = :id', { id })
+      .getMany();
   }
 }

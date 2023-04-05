@@ -9,9 +9,9 @@ export class CategoryService {
   constructor(
     @InjectRepository(CategoryEntity)
     private readonly productRepository: Repository<CategoryEntity>,
-  ) { }
-  
+  ) {}
+
   create(createCategoryDto: CreateCategoryDto) {
-    return this.productRepository.save(createCategoryDto)
+    return this.productRepository.save(createCategoryDto);
   }
 }

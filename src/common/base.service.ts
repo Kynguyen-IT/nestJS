@@ -1,24 +1,23 @@
-import { MessageName } from "@/message";
-import { NotFoundException } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { MessageName } from '@/message';
+import { NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 
-
-export interface Pagination<T>{
+export interface Pagination<T> {
   total: number;
-  data: T[]
+  data: T[];
 }
 
 export interface RemoveResult {
-  removed: number
+  removed: number;
 }
 
 export abstract class BaseService<T, K, V> {
-  constructor(private name: string, private repository: Repository<T>) { }
-  
+  constructor(private name: string, private repository: Repository<T>) {}
+
   abstract findAll(filterDto?): Promise<T[] | Pagination<T>>;
 
-  async findById(id: number): Promise<T>{
-    return await this.repository.findOne({where: {id: id}} as any)
+  async findById(id: number): Promise<T> {
+    return await this.repository.findOne({ where: { id: id } } as any);
   }
 
   async create(createDto: K): Promise<T> {

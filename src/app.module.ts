@@ -16,7 +16,6 @@ import { OrderEntity } from './order/entities/order.entity';
 import { OrderDetailEntity } from './order-detail/entities/order-detail.entity';
 import { OrderDetailModule } from './order-detail/order-detail.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,7 +24,13 @@ import { OrderDetailModule } from './order-detail/order-detail.module';
     }),
     TypeOrmModule.forRoot({
       ...config,
-      entities: [UserEntity, ProductEntity, CategoryEntity, OrderEntity, OrderDetailEntity],
+      entities: [
+        UserEntity,
+        ProductEntity,
+        CategoryEntity,
+        OrderEntity,
+        OrderDetailEntity,
+      ],
     }),
     AuthModule,
     UsersModule,

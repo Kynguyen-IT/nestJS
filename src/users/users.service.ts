@@ -20,7 +20,6 @@ export class UsersService extends BaseService<
     super(MessageName.USER, userRepository);
   }
 
-  
   repositoryService() {
     return this.userRepository;
   }

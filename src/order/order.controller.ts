@@ -37,12 +37,12 @@ export class OrderController {
         order,
         quantity: item.quantity,
         total: item.quantity * item.price,
-        product: item
+        product: item,
       };
-      return data
-    })
-    await this.orderDetailService.create(orderDetaildata)
-    return order
+      return data;
+    });
+    await this.orderDetailService.create(orderDetaildata);
+    return order;
   }
 
   @Get()
