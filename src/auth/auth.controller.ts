@@ -1,12 +1,12 @@
 import { CreateUserDto } from '@/users/dto/create-user.dto';
-import { Controller, Post, Body} from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { ChangePassword } from './dto/changePassword.dto';
 import { ResetPassword } from './dto/resetPassword.dto';
+import { AuthGuard } from '@nestjs/passport';
 
-// @ApiBearerAuth()
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -30,5 +30,15 @@ export class AuthController {
   @Post('change-password')
   changePassword(@Body() data: ChangePassword) {
     return this.authService.changePassword(data);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('google/redirect')
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
   }
 }

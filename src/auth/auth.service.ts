@@ -148,5 +148,17 @@ export class AuthService {
         resetCode: null
       })
   }
+
+  async googleLogin(req: any) {
+    console.log('req', req)
+    if (!req?.user) {
+      throw new NotFoundException(MessageName.USER);
+    }
+
+    return {
+      message: 'User information from google',
+      user: req.user
+    }
+  }
   
 }

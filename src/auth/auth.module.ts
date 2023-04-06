@@ -5,10 +5,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '@/users/users.module';
 import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
+import { GoogleStrtegy } from './strategies/google.strategy';
 
 @Module({
   imports: [JwtModule.register({}), UsersModule],
   controllers: [AuthController],
-  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy]
+  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy, GoogleStrtegy]
 })
 export class AuthModule {}
