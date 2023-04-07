@@ -150,14 +150,33 @@ export class AuthService {
   }
 
   async googleLogin(req: any) {
-    console.log('req', req)
     if (!req?.user) {
       throw new NotFoundException(MessageName.USER);
     }
 
+    const userExists = await this.userService.findByEmail(
+      req.user.email,
+    );
+    if (userExists) {
+      delete userExists.password
+      delete userExists.resetCode 
+    }
+
+    const {email, firstName, lastName, accessToken} = req?.user
+    const createUserDto = {
+      name: firstName + lastName,
+      email,
+      password: ''
+    }
+
+    const newUser = !userExists && await this.userService.repositoryService().save(createUserDto)
+    delete newUser.password
+    delete newUser.resetCode
+
+    const user = userExists || newUser
     return {
-      message: 'User information from google',
-      user: req.user
+      ...user,
+      accessToken
     }
   }
   
